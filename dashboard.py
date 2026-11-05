@@ -1,7 +1,3 @@
-# Panel (dashboard) de BioPay.
-# Lee el historial de la base de datos y genera una pagina web llamada dashboard.html.
-# Uso:  1) py -3.13 dashboard.py     2) abrir dashboard.html con el navegador (se recarga sola cada 5 segundos)
-# Para cortarlo: Ctrl+C. Usa solo cosas que trae Python: no hay que instalar nada.
 import sqlite3
 import time
 import html
@@ -9,10 +5,8 @@ import html
 BASE_DATOS = "biopay.db"
 ARCHIVO_HTML = "dashboard.html"
 
-# Resultados que se deben a la lectura del sensor (no a falta de fondos ni de registro)
 RECHAZOS_SENSOR = "('LECTURA_INVALIDA', 'DEDO_INVALIDO', 'HUELLA_SECA')"
 
-# Como se muestra cada resultado y cada comando en el panel
 NOMBRES = {
     "REGISTRO_OK": "Huella registrada",
     "YA_REGISTRADO": "Ya registrado",
@@ -46,13 +40,10 @@ td, th { padding: 6px 10px; text-align: left; border-bottom: 1px solid #e3e6ea; 
 .ok { background: #e6f4ea; color: #1b5e20; padding: 8px 12px; border-radius: 6px; }
 """
 
-# Abre la base en modo SOLO LECTURA (el panel puede mirar los datos, pero nunca modificarlos)
-# y devuelve todas las filas del resultado.
 def consultar(sql, parametros=()):
     with sqlite3.connect("file:" + BASE_DATOS + "?mode=ro", uri=True) as conexion:
         return conexion.execute(sql, parametros).fetchall()
 
-# Devuelve el HTML de una barra cuyo largo es proporcional a valor / maximo
 def barra(valor, maximo):
     if maximo == 0:
         return '<div class="barra"></div>'
@@ -60,7 +51,6 @@ def barra(valor, maximo):
     return f'<div class="barra"><div style="width:{ancho:.0f}%"></div></div>'
 
 def armar_pagina():
-    # --- Numeros principales ---
     total = consultar("SELECT COUNT(*) FROM historial")[0][0]
     aprobados = consultar("SELECT COUNT(*) FROM historial WHERE resultado = 'PAGO_OK'")[0][0]
     rechazos = consultar(f"SELECT COUNT(*) FROM historial WHERE resultado IN {RECHAZOS_SENSOR}")[0][0]
@@ -69,11 +59,9 @@ def armar_pagina():
     else:
         porcentaje = 0
 
-    # --- Alertas ---
     alertas = ""
     for fila in consultar("SELECT DISTINCT dispositivo FROM historial"):
         dispositivo = fila[0]
-        # Cuenta cuantos de los ultimos 3 eventos de esa placa fueron rechazos por el sensor
         ultimos = consultar(f"SELECT COUNT(*) FROM (SELECT resultado FROM historial WHERE dispositivo = ? "
                             f"ORDER BY id DESC LIMIT 3) WHERE resultado IN {RECHAZOS_SENSOR}", (dispositivo,))[0][0]
         if ultimos == 3:
@@ -85,13 +73,11 @@ def armar_pagina():
     if alertas == "":
         alertas = '<p class="ok">Sin alertas.</p>'
 
-    # --- Distribucion de resultados ---
     resultados = ""
     for fila in consultar("SELECT resultado, COUNT(*) FROM historial GROUP BY resultado ORDER BY COUNT(*) DESC"):
         nombre = NOMBRES.get(fila[0], fila[0])
         resultados += f"<tr><td>{html.escape(nombre)}</td><td class='ancha'>{barra(fila[1], total)}</td><td>{fila[1]}</td></tr>"
 
-    # --- Eventos por hora (las ultimas 8 horas con eventos, de la mas vieja a la mas nueva) ---
     horas = consultar("SELECT strftime('%Y-%m-%d %H:00', fecha, 'localtime') AS hora, COUNT(*), SUM(resultado = 'PAGO_OK') "
                       "FROM historial GROUP BY hora ORDER BY hora DESC LIMIT 8")
     horas.reverse()
@@ -103,7 +89,6 @@ def armar_pagina():
     for fila in horas:
         por_hora += f"<tr><td>{fila[0]}</td><td class='ancha'>{barra(fila[1], maximo)}</td><td>{fila[1]} eventos, {fila[2]} pagos aprobados</td></tr>"
 
-    # --- Por zona: se une el historial con las ubicaciones usando la clave id_ubicacion ---
     por_zona = ""
     for fila in consultar("SELECT COALESCE(u.zona, '(sin zona)'), COUNT(*), SUM(h.resultado = 'PAGO_OK'), "
                           f"SUM(h.resultado IN {RECHAZOS_SENSOR}) "
@@ -112,7 +97,6 @@ def armar_pagina():
         por_zona += (f"<tr><td>{html.escape(fila[0])}</td><td>{fila[1]}</td><td>{fila[2]}</td>"
                      f"<td>{100 * fila[3] / fila[1]:.0f}%</td></tr>")
 
-    # --- Ultimos 10 eventos ---
     ultimos_eventos = ""
     for fila in consultar("SELECT datetime(h.fecha, 'localtime'), h.dispositivo, COALESCE(u.zona, '(sin zona)'), h.comando, "
                           "h.temperatura, h.humedad, h.resultado "
