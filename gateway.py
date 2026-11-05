@@ -11,23 +11,18 @@ USUARIO_PRUEBA = "Matias Del Soto"
 TARIFA = 500.0
 SALDO_INICIAL = 1200.0
 
-# Configuración de red y base de datos
 BROKER = "localhost"
 PUERTO = 1883
 TOPIC_REQ = "biopay/request"
 TOPIC_RES = "biopay/response"
 BASE_DATOS = "biopay.db"
 
-# Rango fisico sensores
 HUM_MIN, HUM_MAX = 0.0, 100.0
 TEMP_MIN, TEMP_MAX = -40.0, 80.0
 
-# Umbrales de validacion
 UMBRAL_TEMP_MIN, UMBRAL_TEMP_MAX = 30.0, 38.0   # °C
 UMBRAL_HUM_MIN = 10.0
 
-# Cada resultado tiene un CODIGO fijo (es lo que se guarda en el historial) y un MENSAJE corto para la
-# pantalla de la placa (maximo 21 letras: lo que entra en una linea del OLED). Ningun mensaje lleva saldo ni nombre.
 MENSAJES = {
     "REGISTRO_OK": "Huella registrada",
     "YA_REGISTRADO": "Ya registrado",
@@ -50,7 +45,6 @@ def inicializar_base_datos():
                 saldo REAL
             )
         """)
-        # Ubicaciones: los lugares donde hay terminales (comercios)
         conexion.execute("""
             CREATE TABLE IF NOT EXISTS ubicaciones (
                 id TEXT PRIMARY KEY,
@@ -58,14 +52,12 @@ def inicializar_base_datos():
                 zona TEXT
             )
         """)
-        # Placas instaladas: cada una está en una ubicación (se relacionan por la clave id_ubicacion)
         conexion.execute("""
             CREATE TABLE IF NOT EXISTS dispositivos (
                 id TEXT PRIMARY KEY,
                 id_ubicacion TEXT
             )
         """)
-        # Eventos: una fila por solicitud recibida. No guarda huella ni saldo.
         conexion.execute("""
             CREATE TABLE IF NOT EXISTS historial (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,30 +70,23 @@ def inicializar_base_datos():
                 resultado TEXT
             )
         """)
-        # INSERT OR REPLACE permite actualizar zona, comercio o placa al cambiar las constantes
         conexion.execute("INSERT OR REPLACE INTO ubicaciones VALUES (?, ?, ?)",(ID_UBICACION_PRUEBA, COMERCIO_PRUEBA, UBICACION_PRUEBA))
         conexion.execute("INSERT OR REPLACE INTO dispositivos VALUES (?, ?)",(ID_DISPOSITIVO_PRUEBA, ID_UBICACION_PRUEBA))
-# Funciones auxiliares: abren la base, ejecutan la instruccion SQL y guardan el cambio.
-# Asi el resto del programa solo dice QUE quiere pedirle a la base, sin repetir como se hace.
 
-# Ejecuta un SELECT y devuelve la primera fila del resultado (o None si no hay ninguna)
 def consultar(sql, parametros):
     with sqlite3.connect(BASE_DATOS) as conexion:
         return conexion.execute(sql, parametros).fetchone()
 
-# Ejecuta un INSERT o UPDATE y guarda el cambio
 def ejecutar(sql, parametros):
     with sqlite3.connect(BASE_DATOS) as conexion:
         conexion.execute(sql, parametros)
 
 def guardar_historial(disp, ubicacion, com, temp, hum, resultado):
-    # La fecha no se manda: la columna "fecha" se completa sola (UTC)
     ejecutar("""
         INSERT INTO historial (dispositivo, id_ubicacion, comando, temperatura, humedad, resultado)
         VALUES (?, ?, ?, ?, ?, ?)
     """, (disp, ubicacion, com, temp, hum, resultado))
 
-# Devuelve la ubicación donde está instalada la placa, o None si la placa no figura en la tabla
 def buscar_ubicacion(dispositivo):
     fila = consultar("SELECT id_ubicacion FROM dispositivos WHERE id = ?", (dispositivo,))
     if fila:
