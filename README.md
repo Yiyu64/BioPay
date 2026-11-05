@@ -11,3 +11,4 @@
 2. Ejecutar python gateway.py
 3. Iniciar la simulación en Wokwi.
 4. Ejecutar python dashboard.py y abrir en la web
+5. MA
