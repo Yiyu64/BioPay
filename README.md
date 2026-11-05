@@ -1,10 +1,10 @@
 # BioPay
 
 ## Estructura del Proyecto
-main.cpp: Código en C++ para la placa ESP32 (máquina de estados, pantalla OLED, botones y sensor de temperatura y humedad)./n
-gateway.py: Servidor en Python que escucha al broker MQTT, valida las lecturas, procesa los pagos y gestiona la base de datos./n
-diagram.json: Diagrama del circuito en Wokwi./n
-biopay.db: Base de datos SQLite que almacena ubicaciones, dispositivos, usuarios simulados e historial./n
+- main.cpp: Código en C++ para la placa ESP32 (máquina de estados, pantalla OLED, botones y sensor de temperatura y humedad).
+- gateway.py: Servidor en Python que escucha al broker MQTT, valida las lecturas, procesa los pagos y gestiona la base de datos.
+- diagram.json: Diagrama del circuito en Wokwi.
+- biopay.db: Base de datos SQLite que almacena ubicaciones, dispositivos, usuarios simulados e historial.
 
 ## Ejecucion
 1. Ejecutar Start-Service Mosquitto
