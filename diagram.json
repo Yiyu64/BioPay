@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "author": "Proyecto Ciudades Inteligentes",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "board-ssd1306",
+      "id": "oled1",
+      "top": 245,
+      "left": 100,
+      "attrs": {
+        "i2cAddress": "0x3c"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "registerBtn",
+      "top": 245,
+      "left": -110,
+      "attrs": {
+        "color": "blue",
+        "label": "REGISTRO",
+        "key": "R",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "payBtn",
+      "top": 245,
+      "left": 285,
+      "attrs": {
+        "color": "green",
+        "label": "PAGAR",
+        "key": "P",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -130,
+      "left": 150,
+      "attrs": {
+        "temperature": "34",
+        "humidity": "45"
+      }
+    }
+  ],
+  "connections": [
+    [ "esp:3V3", "oled1:VCC", "red", [] ],
+    [ "esp:GND.2", "oled1:GND", "black", [] ],
+    [ "esp:22", "oled1:SCL", "blue", [] ],
+    [ "esp:21", "oled1:SDA", "green", [] ],
+    [ "esp:26", "registerBtn:1.l", "blue", [] ],
+    [ "esp:GND.3", "registerBtn:2.l", "black", [] ],
+    [ "esp:27", "payBtn:1.l", "green", [] ],
+    [ "esp:GND.3", "payBtn:2.l", "black", [] ],
+    [ "dht1:VCC", "esp:3V3", "red", [] ],
+    [ "dht1:GND", "esp:GND.2", "black", [] ],
+    [ "dht1:SDA", "esp:4", "orange", [] ]
+  ],
+  "dependencies": {}
+}

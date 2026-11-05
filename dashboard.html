@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="5">
+<title>BioPay - Panel</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f6f8; color: #222; max-width: 900px; margin: 20px auto; padding: 0 12px; }
+h1 { margin-bottom: 4px; }
+h2 { margin-top: 28px; font-size: 18px; }
+.sub { color: #555; margin-top: 0; }
+.tarjetas { display: flex; gap: 12px; flex-wrap: wrap; }
+.tarjeta { background: white; border-radius: 8px; padding: 12px 16px; flex: 1; min-width: 150px; box-shadow: 0 1px 3px #0002; }
+.tarjeta span { display: block; font-size: 34px; font-weight: bold; }
+.principal { border-left: 6px solid #2a7de1; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; }
+td, th { padding: 6px 10px; text-align: left; border-bottom: 1px solid #e3e6ea; font-size: 14px; }
+.ancha { width: 50%; }
+.barra { background: #e3e6ea; border-radius: 4px; height: 14px; width: 100%; }
+.barra div { background: #2a7de1; height: 14px; border-radius: 4px; }
+.alerta { background: #fde8e8; color: #a40000; padding: 8px 12px; border-radius: 6px; margin: 6px 0; }
+.ok { background: #e6f4ea; color: #1b5e20; padding: 8px 12px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>BioPay</h1>
+Actualizado a las 19:21:16.</p>
+
+<div class="tarjetas">
+  <div class="tarjeta"><span>10</span>Eventos en total</div>
+  <div class="tarjeta"><span>2</span>Pagos aprobados</div>
+  <div class="tarjeta principal"><span>30%</span>Rechazos por la lectura del sensor (3 de 10)</div>
+</div>
+
+<h2>Alertas</h2>
+<p class="ok">Sin alertas.</p>
+
+<h2>Resultados</h2>
+<table><tr><td>Ya registrado</td><td class='ancha'><div class="barra"><div style="width:30%"></div></div></td><td>3</td></tr><tr><td>Dedo inválido</td><td class='ancha'><div class="barra"><div style="width:30%"></div></div></td><td>3</td></tr><tr><td>Pago aprobado</td><td class='ancha'><div class="barra"><div style="width:20%"></div></div></td><td>2</td></tr><tr><td>Huella registrada</td><td class='ancha'><div class="barra"><div style="width:10%"></div></div></td><td>1</td></tr><tr><td>No registrado</td><td class='ancha'><div class="barra"><div style="width:10%"></div></div></td><td>1</td></tr></table>
+
+<h2>Eventos por hora</h2>
+<table><tr><td>2026-11-05 14:00</td><td class='ancha'><div class="barra"><div style="width:25%"></div></div></td><td>2 eventos, 0 pagos aprobados</td></tr><tr><td>2026-11-05 19:00</td><td class='ancha'><div class="barra"><div style="width:100%"></div></div></td><td>8 eventos, 2 pagos aprobados</td></tr></table>
+
+<h2>Por zona</h2>
+<table><tr><th>Zona</th><th>Eventos</th><th>Pagos aprobados</th><th>Rechazos por sensor</th></tr><tr><td>Puerto Madero</td><td>10</td><td>2</td><td>30%</td></tr></table>
+
+<h2>Últimos 10 eventos</h2>
+<table><tr><th>Fecha y hora</th><th>Placa</th><th>Zona</th><th>Operación</th><th>Temperatura</th><th>Humedad</th><th>Resultado</th></tr><tr><td>2026-11-05 19:20:40</td><td>ESP32_01</td><td>Puerto Madero</td><td>Registro</td><td>36.7 °C</td><td>29.5 %</td><td>Ya registrado</td></tr><tr><td>2026-11-05 19:19:45</td><td>ESP32_01</td><td>Puerto Madero</td><td>Pago</td><td>51.6 °C</td><td>45.0 %</td><td>Dedo inválido</td></tr><tr><td>2026-11-05 19:18:15</td><td>ESP32_01</td><td>Puerto Madero</td><td>Registro</td><td>34.0 °C</td><td>45.0 %</td><td>Ya registrado</td></tr><tr><td>2026-11-05 19:17:26</td><td>ESP32_01</td><td>Puerto Madero</td><td>Pago</td><td>34.0 °C</td><td>45.0 %</td><td>Pago aprobado</td></tr><tr><td>2026-11-05 19:03:16</td><td>ESP32_01</td><td>Puerto Madero</td><td>Pago</td><td>34.0 °C</td><td>45.0 %</td><td>Pago aprobado</td></tr><tr><td>2026-11-05 19:03:00</td><td>ESP32_01</td><td>Puerto Madero</td><td>Registro</td><td>34.0 °C</td><td>45.0 %</td><td>Ya registrado</td></tr><tr><td>2026-11-05 19:02:47</td><td>ESP32_01</td><td>Puerto Madero</td><td>Registro</td><td>34.0 °C</td><td>45.0 %</td><td>Huella registrada</td></tr><tr><td>2026-11-05 19:02:26</td><td>ESP32_01</td><td>Puerto Madero</td><td>Pago</td><td>34.0 °C</td><td>45.0 %</td><td>No registrado</td></tr><tr><td>2026-11-05 14:58:32</td><td>ESP32_01</td><td>Puerto Madero</td><td>Registro</td><td>24.0 °C</td><td>40.0 %</td><td>Dedo inválido</td></tr><tr><td>2026-11-05 14:58:11</td><td>ESP32_01</td><td>Puerto Madero</td><td>Pago</td><td>24.0 °C</td><td>40.0 %</td><td>Dedo inválido</td></tr></table>
+</body>
+</html>
